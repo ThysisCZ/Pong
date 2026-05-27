@@ -131,7 +131,27 @@ void update_ball(Ball *ball, Player *p_right, Player *p_left)
     {
         ball->x = WIDTH / 2;
         ball->y = HEIGHT / 2;
-        ball->vx = -ball->vx;
+
+        // handle slowdown
+        if (score > 0)
+        {
+            if ((pl_y > b_y + 2 * r + 1 && b_y - r < pl_y + h) ||
+                (pr_y > b_y + 2 * r + 1 && b_y - r < pr_y + h) ||
+                (pl_y + h < b_y - 2 * r + 1 && b_y + r > pl_y) ||
+                (pr_y + h < b_y - 2 * r + 1 && b_y + r > pr_y))
+            {
+                ball->vx = -ball->vx / 2;
+            }
+            else
+            {
+                ball->vx = -ball->vx;
+            }
+        }
+        else
+        {
+            ball->vx = -ball->vx;
+        }
+
         score = 0;
 
         x_offset = 20;
@@ -146,9 +166,36 @@ void update_ball(Ball *ball, Player *p_right, Player *p_left)
     // handle right player bounce
     if (b_x + r == pr_x && (b_y >= pr_y - 2 * r && b_y <= pr_y + h + 2 * r))
     {
-        ball->vx = -ball->vx;
+        // middle bounce
+        if (b_y >= (pr_y + h / 2) - r && b_y <= (pr_y + h / 2) + r)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = 0;
+        }
+
+        // top bounce
+        if (b_y < (pr_y + h / 2) - r && b_y >= pr_y)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = -5;
+        }
+
+        // bottom bounce
+        if (b_y > (pr_y + h / 2) + r && b_y <= pr_y + h)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = 5;
+        }
+
+        // handle speed
+        if (ball->vx == -5)
+        {
+            ball->vx *= 2;
+        }
+
         score++;
 
+        // dynamic score alignment
         if (score % (10 * q) == 0)
         {
             x_offset += 6;
@@ -164,9 +211,36 @@ void update_ball(Ball *ball, Player *p_right, Player *p_left)
     // handle left player bounce
     if (b_x - r == pl_x + w && (b_y >= pl_y - 2 * r && b_y <= pl_y + h + 2 * r))
     {
-        ball->vx = -ball->vx;
+        // middle bounce
+        if (b_y >= (pl_y + h / 2) - r && b_y <= (pl_y + h / 2) + r)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = 0;
+        }
+
+        // top bounce
+        if (b_y < (pl_y + h / 2) - r && b_y >= pl_y)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = -5;
+        }
+
+        // bottom bounce
+        if (b_y > (pl_y + h / 2) + r && b_y <= pl_y + h)
+        {
+            ball->vx = -ball->vx;
+            ball->vy = 5;
+        }
+
+        // handle speed
+        if (ball->vx == 5)
+        {
+            ball->vx *= 2;
+        }
+
         score++;
 
+        // dynamic score alignment
         if (score % (10 * q) == 0)
         {
             x_offset += 6;
