@@ -143,7 +143,8 @@ void update_ball(Ball *ball, Player *p_right, Player *p_left)
         ball->vy = -ball->vy;
     }
 
-    if (b_x + r == pr_x && (b_y >= pr_y && b_y <= pr_y + h))
+    // handle right player bounce
+    if (b_x + r == pr_x && (b_y >= pr_y - 2 * r && b_y <= pr_y + h + 2 * r))
     {
         ball->vx = -ball->vx;
         score++;
@@ -160,7 +161,8 @@ void update_ball(Ball *ball, Player *p_right, Player *p_left)
         }
     }
 
-    if (b_x - r == pl_x + w && (b_y >= pl_y && b_y <= pl_y + h))
+    // handle left player bounce
+    if (b_x - r == pl_x + w && (b_y >= pl_y - 2 * r && b_y <= pl_y + h + 2 * r))
     {
         ball->vx = -ball->vx;
         score++;
